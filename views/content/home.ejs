@@ -1,0 +1,467 @@
+<%- include('../partials/doc-info') %>
+
+<!DOCTYPE html>
+<html lang="is" data-hx-boost="true">
+    <head>
+        <%- include('../partials/head', {
+            html_title: 'Útivistarsvæði Reykjavíkurskáta við Hafravatn',
+            og_image: '/public/static/img/Skatar-25-07-10-00096-WEB_SIZE-1920w.jpg'
+        }) %>
+    </head>
+    <body class="bg-gray-50">
+        <main class="flex flex-col">
+            <div class="container w-full pt-10 pb-2">
+                <div class="flex w-full justify-between">
+                    <a href="/" class="flex items-center gap-2">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-flag-icon lucide-flag"
+                        >
+                            <path
+                                d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528"
+                            />
+                        </svg>
+
+                        <p class="text-black">Framlög.is</p>
+                    </a>
+
+                    <select class="text-sm focus:outline-none focus-visible:outline-2 focus-visible:outline-dashed">
+                        <option>Íslenska 🇮🇸</option>
+                        <option>English 🇪🇺</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="container w-full py-8">
+                <div
+                    style="
+                        background-image: url(&quot;/public/static/img/Skatar-25-07-10-00096-WEB_SIZE-1920w.jpg&quot;);
+                    "
+                    class="h-96 w-full bg-center bg-cover rounded-xl shadow overflow-hidden"
+                >
+                    <div class="h-full w-full bg-[#18193f]/40 flex items-center p-16">
+                        <div>
+                            <h1 class="text-4xl font-medium text-white"><%= i18n.title %></h1>
+
+                            <p class="text-xl text-gray-200 mt-6"><%= i18n.subtitle %></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container w-full py-8">
+                <div class="w-full grid grid-cols-2 gap-8">
+                    <div class="bg-white border border-gray-100 rounded-xl shadow-sm p-8 space-y-4">
+                        <h2 class="text-xl font-medium text-[#18193f] leading-7"><%= i18n.about_card.title %></h2>
+
+                        <% for (const paragraph of i18n.about_card.paragraphs) {%>
+                        <p class="text-gray-700 leading-5"><%= paragraph %></p>
+                        <% } %>
+                    </div>
+
+                    <div
+                        class="bg-white border border-gray-100 rounded-xl shadow-sm p-8"
+                        data-payment-gateway-id="<%= payment_gateway.id %>"
+                    >
+                        <div class="flex flex-col gap-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="font-medium text-[#18193f] block mb-2">Styrktarupphæð</label>
+
+                                    <select id="fl__preset_amounts" class="fl--checkout-input">
+                                        <% for (const preset of donation_amount_presets) { %>
+                                        <option value="<%= preset.value %>"><%= preset.label %> kr</option>
+                                        <% } %>
+                                        <option value="other">Önnur upphæð</option>
+                                    </select>
+
+                                    <div id="fl__custom_amount_container" class="relative hidden">
+                                        <input
+                                            id="fl__custom_amount"
+                                            type="text"
+                                            inputmode="numeric"
+                                            placeholder="t.d. 10.000"
+                                            required
+                                            class="fl--checkout-input"
+                                        />
+
+                                        <span
+                                            class="absolute top-1/2 -translate-y-1/2 right-3 text-sm text-gray-500 font-medium"
+                                            >kr</span
+                                        >
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label class="font-medium text-[#18193f] block">Nafn korthafa</label>
+
+                                    <input
+                                        id="fl__cardholder_name"
+                                        type="text"
+                                        placeholder="Jón Andri H."
+                                        required
+                                        class="fl--checkout-input"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <label class="font-medium text-[#18193f] block">Kortanúmer</label>
+
+                                    <div class="flex gap-1">
+                                        <% if (payment_gateway.active_schemes.includes('VISA')) { %>
+                                        <img
+                                            src="/public/static/img/svg/schemes/visa.svg"
+                                            alt="Visa"
+                                            height="20"
+                                            width="29"
+                                        />
+                                        <% } %>
+                                        <% if (payment_gateway.active_schemes.includes('MAESTRO')) { %>
+                                        <img
+                                            src="/public/static/img/svg/schemes/maestro.svg"
+                                            alt="Maestro"
+                                            height="20"
+                                            width="29"
+                                        />
+                                        <% } %>
+                                        <% if (payment_gateway.active_schemes.includes('MASTERCARD')) { %>
+                                        <img
+                                            src="/public/static/img/svg/schemes/mastercard.svg"
+                                            alt="MasterCard"
+                                            height="20"
+                                            width="29"
+                                        />
+                                        <% } %>
+                                        <% if (payment_gateway.active_schemes.includes('AMEX')) { %>
+                                        <img
+                                            src="/public/static/img/svg/schemes/amex.svg"
+                                            alt="American Express"
+                                            height="20"
+                                            width="29"
+                                        />
+                                        <% } %>
+                                        <% if (payment_gateway.active_schemes.includes('DINERS_CLUB')) { %>
+                                        <img
+                                            src="/public/static/img/svg/schemes/diners.svg"
+                                            alt="Diners"
+                                            height="20"
+                                            width="29"
+                                        />
+                                        <% } %>
+                                        <% if (payment_gateway.active_schemes.includes('JCB')) { %>
+                                        <img
+                                            src="/public/static/img/svg/schemes/jcb.svg"
+                                            alt="JCB"
+                                            height="20"
+                                            width="29"
+                                        />
+                                        <% } %>
+                                        <% if (payment_gateway.active_schemes.includes('DISCOVER')) { %>
+                                        <img
+                                            src="/public/static/img/svg/schemes/discover.svg"
+                                            alt="Discover"
+                                            height="20"
+                                            width="29"
+                                        />
+                                        <% } %>
+                                        <% if (payment_gateway.active_schemes.includes('UNIONPAY')) { %>
+                                        <img
+                                            src="/public/static/img/svg/schemes/unionpay.svg"
+                                            alt="UnionPay"
+                                            height="20"
+                                            width="29"
+                                        />
+                                        <% } %>
+                                    </div>
+                                </div>
+
+                                <input
+                                    id="fl__pan"
+                                    type="text"
+                                    placeholder="xxxx xxxx xxxx xxxx"
+                                    required
+                                    class="fl--checkout-input"
+                                />
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label class="font-medium text-[#18193f] block">Rennur út</label>
+
+                                    <input
+                                        id="fl__expiry"
+                                        type="text"
+                                        placeholder="MM/YY"
+                                        required
+                                        class="fl--checkout-input"
+                                    />
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label class="font-medium text-[#18193f] block">CVC/CVV</label>
+
+                                    <input
+                                        id="fl__cvc_cvv"
+                                        type="password"
+                                        placeholder="&bull;&bull;&bull;"
+                                        required
+                                        class="fl--checkout-input"
+                                    />
+                                </div>
+                            </div>
+
+                            <button class="fl--checkout-button h-9 mt-2">
+                                Styrkja um 1.500kr
+
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="lucide lucide-lock-keyhole-icon lucide-lock-keyhole"
+                                >
+                                    <circle cx="12" cy="16" r="1" />
+                                    <rect x="3" y="10" width="18" height="12" rx="2" />
+                                    <path d="M7 10V7a5 5 0 0 1 10 0v3" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container w-full py-8" data-receiver-id="<%= receiver.id %>">
+                <div class="bg-[#18193f] rounded-xl shadow-sm p-8 flex gap-8">
+                    <% if (receiver.logo_url) { %>
+                    <img
+                        src="<%= receiver.logo_url %>"
+                        alt="<%= receiver.dba_name ?? receiver.legal_name %>"
+                        class="h-14 -mb-2"
+                    />
+                    <% } %>
+
+                    <% if (receiver.contact_address || (receiver.contact_postcode && receiver.contact_city)) { %>
+                    <div class="space-y-1">
+                        <% if (receiver.contact_address) { %>
+                        <p class="text-white"><%= receiver.contact_address %></p>
+                        <% } %>
+                        <% if (receiver.contact_postcode && receiver.contact_city && receiver.address_format === "IS") { %>
+                        <p class="text-white"><%= receiver.contact_postcode %> <%= receiver.contact_city %></p>
+                        <% } %>
+                        <% if (receiver.contact_postcode && receiver.contact_city && receiver.address_format === "ZZ") { %>
+                        <p class="text-white"><%= receiver.contact_city %> <%= receiver.contact_postcode %></p>
+                        <% } %>
+                    </div>
+                    <% } %>
+
+                    <div class="space-y-1">
+                        <p class="text-white">Kt. <%= receiver.registration_id %></p>
+                        <% if (receiver.vat_id) { %>
+                        <p class="text-white">VSK nr. <%= receiver.vat_id %></p>
+                        <% } %>
+                    </div>
+
+                    <% if (receiver.contact_email || receiver.contact_phone) { %>
+                    <div class="space-y-1">
+                        <% if (receiver.contact_email) { %>
+                        <a class="text-white underline block" href="mailto:ssr@ssr.is"><%= receiver.contact_email %></a>
+                        <% } %>
+                        <% if (receiver.contact_phone) { %>
+                        <a
+                            class="text-white underline block"
+                            href="tel:+354<%= receiver.contact_phone.replaceAll(' ', '') %>"
+                            ><%= receiver.contact_phone %></a
+                        >
+                        <% } %>
+                    </div>
+                    <% } %>
+
+                    <div class="flex grow justify-end items-start">
+                        <a class="text-white underline" href="<%= receiver.terms_url %>">Skilmálar</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container w-full pt-2 pb-10">
+                <div class="flex justify-between w-full gap-8">
+                    <p class="text-sm text-gray-500">&copy; <%= current_year %> Arctic Tern ehf.</p>
+
+                    <div class="flex items-center gap-4">
+                        <a href="#" class="text-sm text-gray-500 underline">Persónuverndarstefna</a>
+                        <a href="#" class="text-sm text-gray-500 underline">Rekstraraðili</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <%- include('../partials/scripts') %>
+
+        <script>
+            const donation_limit = Number("<%= donation_limit ?? '0' %>");
+
+            const normalise_numstr = (numstr) => {
+                let normalised = "";
+                for (const char of numstr) {
+                    switch (char) {
+                        case "0":
+                        case "1":
+                        case "2":
+                        case "3":
+                        case "4":
+                        case "5":
+                        case "6":
+                        case "7":
+                        case "8":
+                        case "9": {
+                            normalised += char;
+                        }
+                    }
+                }
+
+                return normalised;
+            };
+
+            const format_isk = (amount) => {
+                return normalise_numstr(amount)
+                    .split("")
+                    .reverse()
+                    .reduce((acc, digit, index) => {
+                        if (index !== 0 && index % 3 === 0) {
+                            acc.push(".");
+                        }
+                        acc.push(digit);
+                        return acc;
+                    }, [])
+                    .reverse()
+                    .join("");
+            };
+
+            const format_pan = (number) => {
+                const number_normalised = number.replaceAll(" ", "");
+
+                return number_normalised.split("").reduce((seed, next, index) => {
+                    switch (next) {
+                        case "0":
+                        case "1":
+                        case "2":
+                        case "3":
+                        case "4":
+                        case "5":
+                        case "6":
+                        case "7":
+                        case "8":
+                        case "9": {
+                            break;
+                        }
+
+                        default: {
+                            return seed;
+                        }
+                    }
+
+                    if (index > 15) {
+                        return seed;
+                    }
+
+                    if (index !== 0 && !(index % 4)) {
+                        seed += " ";
+                    }
+
+                    return seed + next;
+                }, "");
+            };
+
+            const format_exp_date = (expiry) => {
+                const expiry_normalised = expiry.replaceAll("/", "");
+
+                return expiry_normalised.split("").reduce((seed, next, index) => {
+                    switch (next) {
+                        case "0":
+                        case "1":
+                        case "2":
+                        case "3":
+                        case "4":
+                        case "5":
+                        case "6":
+                        case "7":
+                        case "8":
+                        case "9": {
+                            break;
+                        }
+
+                        default: {
+                            return seed;
+                        }
+                    }
+
+                    if (index > 3) {
+                        return seed;
+                    }
+
+                    if (index === 2) {
+                        seed += "/";
+                    }
+
+                    return seed + next;
+                }, "");
+            };
+
+            fl__preset_amounts.addEventListener("change", (e) => {
+                if (e.currentTarget.value.toLowerCase() === "other") {
+                    fl__preset_amounts.classList.toggle("hidden");
+                    fl__custom_amount_container.classList.toggle("hidden");
+                }
+            });
+
+            fl__custom_amount.addEventListener("input", (e) => {
+                if (donation_limit && Number(normalise_numstr(e.currentTarget.value)) * 100 >= donation_limit) {
+                    const formatted = format_isk(`${donation_limit / 100}`);
+                    e.currentTarget.value = formatted;
+                    if ("setSelectionRange" in e.currentTarget) {
+                        e.currentTarget?.setSelectionRange(formatted.length, formatted.length);
+                    }
+
+                    return;
+                }
+
+                const formatted = format_isk(e.currentTarget.value);
+                e.currentTarget.value = formatted;
+                if ("setSelectionRange" in e.currentTarget) {
+                    e.currentTarget?.setSelectionRange(formatted.length, formatted.length);
+                }
+            });
+
+            fl__pan.addEventListener("input", (e) => {
+                e.currentTarget.value = format_pan(e.currentTarget.value);
+            });
+
+            fl__expiry.addEventListener("input", (e) => {
+                e.currentTarget.value = format_exp_date(e.currentTarget.value);
+            });
+
+            fl__cvc_cvv.addEventListener("input", (e) => {
+                const value = e.currentTarget.value;
+                if (typeof value !== "string" || value.length < 1) {
+                    return;
+                }
+
+                e.currentTarget.value = value.substring(0, 4);
+            });
+        </script>
+    </body>
+</html>

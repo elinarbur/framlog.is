@@ -1,0 +1,26 @@
+<section class="bg-yellow-300">
+    <header class="py-16 pb-8 max-w-7xl mx-auto px-8 at--custom-hover-effect"><%- include('./nav') %></header>
+
+    <div class="max-w-7xl mx-auto px-8 pt-8 py-24">
+        <div class="w-full">
+            <div class="max-w-2xl">
+                <% if (typeof title === "string") { %>
+                <h1 class="text-5xl font-semibold leading-14"><%= title %></h1>
+                <% } %>
+
+                <% if (typeof subtitle === "string") { %>
+                <p class="text-xl font-medium text-black/80 mt-8 leading-9"><%= subtitle %></p>
+                <% } %>
+
+                <% if (typeof button === "object") { %>
+                <a
+                    href="/<%= button.href %>"
+                    class="bg-black text-yellow-300 px-4 py-3 inline-block mt-8 font-medium hover:bg-black/80 transition duration-100"
+                >
+                    <%= button.label %>
+                </a>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</section>

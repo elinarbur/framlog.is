@@ -1,0 +1,138 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+    provider = "prisma-client"
+    output   = "../generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+enum receiver_address_format {
+    IS
+    ZZ
+}
+
+model receiver {
+    id               String                  @id @default(ulid())
+    dba_name         String?
+    legal_name       String
+    logo_url         String?
+    registration_id  String
+    vat_id           String?
+    contact_email    String?
+    contact_phone    String?
+    contact_address  String?
+    contact_postcode String?
+    contact_city     String?
+    address_format   receiver_address_format @default(IS)
+    terms_url        String
+    pages            receiver_page[]
+    created_at       DateTime                @default(now())
+    updated_at       DateTime                @updatedAt
+}
+
+model receiver_page {
+    id                          String                @id
+    receiver                    receiver              @relation(fields: [receiver_id], references: [id])
+    receiver_id                 String
+    title_string                translation_strings   @relation("title", fields: [title_string_key], references: [key])
+    title_string_key            String
+    subtitle_string             translation_strings   @relation("subtitle", fields: [subtitle_string_key], references: [key])
+    subtitle_string_key         String
+    about_card_title_string     translation_strings   @relation("about_card_title", fields: [about_card_title_string_key], references: [key])
+    about_card_title_string_key String
+    about_card_paragraphs       translation_strings[]
+    payment_gateway             payment_gateway       @relation(fields: [payment_gateway_id], references: [id])
+    payment_gateway_id          String
+    donation_limit              Int?
+    donation_amount_presets     Int[]
+    created_at                  DateTime              @default(now())
+    updated_at                  DateTime              @updatedAt
+}
+
+enum translation_string_type {
+    RECEIVER_PAGE_UI
+    RECEIVER_PAGE_CUSTOM
+}
+
+model translation_strings {
+    key                                   String                  @id
+    type                                  translation_string_type
+    order                                 Int                     @default(autoincrement())
+    literal_is                            String
+    literal_en                            String
+    receiver_page_titles                  receiver_page[]         @relation("title")
+    receiver_page_subtitles               receiver_page[]         @relation("subtitle")
+    receiver_page_about_card_titles       receiver_page[]         @relation("about_card_title")
+    receiver_page_about_card_paragraph    receiver_page?          @relation(fields: [receiver_page_about_card_paragraph_id], references: [id])
+    receiver_page_about_card_paragraph_id String?
+    created_at                            DateTime                @default(now())
+    updated_at                            DateTime                @updatedAt
+}
+
+enum payment_gateway_schemes {
+    VISA
+    MAESTRO
+    MASTERCARD
+    AMEX
+    DINERS_CLUB
+    JCB
+    DISCOVER
+    UNIONPAY
+}
+
+enum payment_gateway_connection {
+    VERIFONE
+}
+
+enum payment_gateway_currency {
+    ISK
+}
+
+model payment_gateway {
+    id                              String                     @id @default(ulid())
+    connection_type                 payment_gateway_connection
+    active_receiver_pages           receiver_page[]
+    active_schemes                  payment_gateway_schemes[]
+    verifone_connection             verifone_connection        @relation(fields: [verifone_connection_merchant_id], references: [merchant_id])
+    verifone_connection_merchant_id String
+    created_at                      DateTime                   @default(now())
+    updated_at                      DateTime                   @updatedAt
+}
+
+model verifone_connection {
+    merchant_id                  String                                   @id
+    currency                     payment_gateway_currency
+    user_id                      String
+    api_key                      String
+    merchant_site_id             String
+    payment_provider_contract_id String
+    threed_secure_contract_id    String
+    public_key_alias             String
+    public_key_literal           String
+    token_scope_id               String
+    active_payment_gateways      payment_gateway[]
+    transactions                 payment_gateway_connection_transaction[]
+    created_at                   DateTime                                 @default(now())
+    updated_at                   DateTime                                 @updatedAt
+}
+
+model payment_gateway_connection_transaction {
+    internal_id                     String                    @id @default(ulid())
+    amount                          Int?
+    currency                        payment_gateway_currency?
+    transaction_time                DateTime?
+    authorization_code              String?
+    acquirer_response_code          String?
+    success_response                Json?
+    error_response                  Json?
+    verifone_connection             verifone_connection       @relation(fields: [verifone_connection_merchant_id], references: [merchant_id])
+    verifone_connection_merchant_id String
+    created_at                      DateTime                  @default(now())
+    updated_at                      DateTime                  @updatedAt
+}

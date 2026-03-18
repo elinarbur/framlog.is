@@ -1,0 +1,12 @@
+<!--
+
+    Build version:        <%= _version?.substring(0, 7) %>
+    Page generated:       <%= _generated %>
+    Client IP:            <%= _client_ip %>
+    Request path:         <%= _pathname %>
+    Rate limit max:       <%= _ratelimit.limit %>
+    Rate limit used:      <%= _ratelimit.used %>
+    Rate limit remaining: <%= _ratelimit.remaining %>
+    Rate limit resets at: <%= _ratelimit.resetTime.toISOString() %>
+
+-->

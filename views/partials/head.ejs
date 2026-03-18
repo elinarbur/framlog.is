@@ -1,0 +1,36 @@
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap"
+    rel="stylesheet"
+/>
+
+<link rel="stylesheet" href="/public/static/css/tw.min.css" />
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<% const seo_title = `${html_title} • Framlög.is` %>
+<% const seo_descr = typeof html_description === "string" ? html_description : `Ein gátt fyrir frjáls framlög til íslenskra hagnaðarlausra félaga` %>
+<% const seo_url = 'https://framlog.is' %>
+<% const seo_img = typeof og_image === "string" ? og_image : `/public/static/img/mike-meyers--haAxbjiHds-unsplash.jpg` %>
+
+<title><%= seo_title %></title>
+<meta name="title" content="<%= seo_title %>" />
+<meta name="description" content="<%= seo_descr %>" />
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="<%= seo_url %>" />
+<meta property="og:title" content="<%= seo_title %>" />
+<meta property="og:description" content="<%= seo_descr %>" />
+<meta property="og:image" content="<%= seo_img %>" />
+
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content="<%= seo_url %>" />
+<meta property="twitter:title" content="<%= seo_title %>" />
+<meta property="twitter:description" content="<%= seo_descr %>" />
+<meta property="twitter:image" content="<%= seo_img %>" />
+
+<link rel="canonical" href="<%= seo_url %><%= _pathname %>" />
+
+<meta name="theme-color" content="#ffdf20" />

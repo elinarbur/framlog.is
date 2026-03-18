@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+    --font-sans: "IBM Plex Sans", sans-serif;
+}
+
+.container {
+    @apply mx-auto max-w-7xl px-8;
+}
+
+.fl--checkout-input {
+    @apply h-9 w-full min-w-0 rounded-md border border-gray-200 bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none placeholder:text-gray-500 focus-visible:border-gray-300 focus-visible:ring-[3px] focus-visible:ring-gray-300/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-red-600 aria-invalid:ring-red-600/20 md:text-sm dark:aria-invalid:ring-red-600/40;
+}
+
+.fl--checkout-button {
+    @apply relative inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-[#18193f] text-sm font-medium whitespace-nowrap text-white transition-all outline-none hover:bg-[#18193f]/80 focus-visible:border-[#18193f] focus-visible:ring-[3px] focus-visible:ring-[#18193f]/50 active:translate-y-[1px] disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-red-600 aria-invalid:ring-red-600/20 dark:aria-invalid:ring-red-600/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4;
+}
+
+.at--custom-hover-effect a {
+    transition: opacity 300ms;
+}
+
+.at--custom-hover-effect:has(a:hover) a:not(:hover) {
+    opacity: 0.5;
+}
+
+.at--custom-footer-hover-effect div:has(a) {
+    transition: opacity 300ms;
+}
+
+.at--custom-footer-hover-effect:has(div:hover) div:not(:hover) {
+    opacity: 0.5;
+}
+
+.at--custom-link {
+    background-image: linear-gradient(
+        color-mix(in oklab, var(--color-yellow-300) 50%, transparent),
+        color-mix(in oklab, var(--color-yellow-300) 50%, transparent)
+    );
+    background-size: 100% calc(var(--spacing) * 2.5);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 300ms ease;
+}
+
+.at--custom-link:hover,
+.group:has(.at--custom-link):is(:hover) .at--custom-link {
+    background-size: 100% 100%;
+}

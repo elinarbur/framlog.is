@@ -1,0 +1,82 @@
+<%- include('../partials/doc-info') %>
+
+<!DOCTYPE html>
+<html lang="is" data-hx-boost="true">
+    <head>
+        <%- include('../partials/head', {
+            html_title: 'Um okkur'
+        }) %>
+    </head>
+    <body>
+        <main class="flex flex-col">
+            <!-- prettier-ignore -->
+            <%- include('../partials/header', {
+                title: 'Um okkur',
+                subtitle: `Við erum sem þokuljós á skýjuð vandamál` 
+            }) %>
+
+            <section class="w-full max-w-7xl mx-auto px-8 py-16">
+                <div>
+                    <p class="text-lg leading-8">
+                        Arctic Tern er sérhæft þjónustu- og ráðgjafafyrirtæki á sviði tækniinnviða á Íslandi. Við
+                        hönnum, rekum, hýsum, og útfærum stafræna tækniinnviði hér- og erlendis. Við erum með
+                        sérfræðiþekkingu af ýmis konar tölvukerfum og hugbúnaði svo sem:
+                    </p>
+
+                    <ul class="pl-8 text-lg pt-4 list-disc space-y-4">
+                        <li>Greiðslu- og fjármálakerfi</li>
+                        <li>Netkerfi, þar á meðal stór fyrirtækjanet og stofnnet</li>
+                        <li>Vefverslanir og önnur netverslun</li>
+                        <li>Sjálfvirknivædd viðskiptakerfi á borð við CRM og ERP kerfi</li>
+                    </ul>
+
+                    <p class="text-lg leading-8 mt-8">
+                        Þau helstu verkefni sem við vinnum reglulega fyrir okkar viðskiptavini eru:
+                    </p>
+
+                    <ul class="pl-8 text-lg pt-4 list-disc space-y-4">
+                        <li>Útfærsla, og rekstur, á sérsniðnum sjálfvirkum viðskiptakerfum</li>
+                        <li>Uppsetning og rekstur vefverslana</li>
+                        <li>Gerð heimasíðna með eða án vefumsjónarkerfi</li>
+                        <li>
+                            Hönnun, útfærsla, og rekstur netkerfa fyrir verslanir, skrifstofur, og annan atvinnurekstur
+                        </li>
+                        <li>Uppsetning og rekstur gagnavistunarkerfa</li>
+                        <li>Þróun framenda fyrir hugbúnað nú þegar með bakenda</li>
+                        <li>Þróun bakenda (API) fyrir hugbúnað nú þegar með framenda</li>
+                        <li>Uppsetning og rekstur símkerfa</li>
+                    </ul>
+
+                    <p class="text-lg leading-8 mt-4">
+                        Jafnvel þó að það sem þínum rekstri vantar er ekki gefið upp hér eru góðar líkur á því að við
+                        höfum komið að slíku áður, og/eða að lausnin sé blanda af eitthverju af ofangreindu.
+                        <a href="/hafa-samband" class="at--custom-link">Hafðu samband</a> og hjálpaðu okkur að skilja
+                        þínar þarfir, svo við getum hjálpað þér að svara þeim.
+                    </p>
+
+                    <p class="text-lg leading-8 mt-8">
+                        Félagið heitir í höfuðið á stofnanda þess, Kríu, en "arctic tern" er heiti fuglsins á ensku.
+                        Kría hefur áður starfað hjá Reiknistofu Fiskmarkaða, greiðslulausnafyrirtækinu Verifone, og
+                        stofnaði upplýsingatæknifyrirtækið Spaugur.
+                    </p>
+
+                    <div class="border-l-4 border-red-500 p-3 mt-8 flex gap-2 bg-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="size-5 shrink-0 mt-0.5">
+                            <path
+                                d="M320 576C178.6 576 64 461.4 64 320C64 178.6 178.6 64 320 64C461.4 64 576 178.6 576 320C576 461.4 461.4 576 320 576zM320 384C302.3 384 288 398.3 288 416C288 433.7 302.3 448 320 448C337.7 448 352 433.7 352 416C352 398.3 337.7 384 320 384zM320 192C301.8 192 287.3 207.5 288.6 225.7L296 329.7C296.9 342.3 307.4 352 319.9 352C332.5 352 342.9 342.3 343.8 329.7L351.2 225.7C352.5 207.5 338.1 192 319.8 192z"
+                            />
+                        </svg>
+
+                        <span>Félögin Arctic Tern og Tern Systems, sem er í eigu Isavia, eru ekki skyld.</span>
+                    </div>
+                </div>
+            </section>
+
+            <%- include('../partials/cta') %>
+
+            <%- include('../partials/footer') %>
+        </main>
+
+        <%- include('../partials/scripts') %>
+    </body>
+</html>
