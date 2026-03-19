@@ -109,7 +109,7 @@ app.get("/:receiver_page_id", async (req, res) => {
         return res.contentType("application/xml").status(404).render("404");
     }
 
-    const i18n = {
+    let i18n = {
         title: page.title_string.literal_is,
         subtitle: page.subtitle_string.literal_is,
         about_card: {
@@ -117,6 +117,16 @@ app.get("/:receiver_page_id", async (req, res) => {
             paragraphs: page.about_card_paragraphs.map((p) => p.literal_is),
         },
     };
+    if (res.locals.user_lang === "en") {
+        i18n = {
+            title: page.title_string.literal_en,
+            subtitle: page.subtitle_string.literal_en,
+            about_card: {
+                title: page.about_card_title_string.literal_en,
+                paragraphs: page.about_card_paragraphs.map((p) => p.literal_en),
+            },
+        };
+    }
 
     return res.render("content/home", {
         i18n,
