@@ -5,6 +5,7 @@ ENV SOURCE_COMMIT=$SOURCE_COMMIT
 COPY package.json /app
 RUN npm install
 COPY . /app
+RUN npx prisma generate
 RUN npm run build
 ENV TS_NODE_BASEURL=./.build
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD curl -f http://127.1.1.1:3000/health || exit 1
