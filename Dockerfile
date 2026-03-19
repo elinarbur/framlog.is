@@ -4,7 +4,7 @@ WORKDIR /app
 ARG SOURCE_COMMIT
 ENV SOURCE_COMMIT=$SOURCE_COMMIT
 COPY package.json /app
-RUN npm install
+RUN npm ci
 COPY . /app
 RUN npx prisma generate
 RUN npm run build
