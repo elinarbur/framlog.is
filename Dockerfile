@@ -3,7 +3,7 @@ RUN apk --no-cache add curl && npm i -g pnpm
 WORKDIR /app
 ARG SOURCE_COMMIT
 ENV SOURCE_COMMIT=$SOURCE_COMMIT
-COPY package.json /app
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /app
 RUN pnpm install --frozen-lockfile
 COPY . /app
 RUN pnpm prisma generate
