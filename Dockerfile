@@ -1,4 +1,5 @@
 FROM node:lts-alpine
+RUN apk --no-cache add curl
 WORKDIR /app
 ARG SOURCE_COMMIT
 ENV SOURCE_COMMIT=$SOURCE_COMMIT
