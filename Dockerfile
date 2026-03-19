@@ -1,13 +1,13 @@
 FROM node:lts-alpine
-RUN apk --no-cache add curl
+RUN apk --no-cache add curl && npm i -g pnpm
 WORKDIR /app
 ARG SOURCE_COMMIT
 ENV SOURCE_COMMIT=$SOURCE_COMMIT
 COPY package.json /app
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 COPY . /app
-RUN npx prisma generate
-RUN npm run build
+RUN pnpm prisma generate
+RUN pnpm run build
 ENV TS_NODE_BASEURL=./.build
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD curl -f http://127.1.1.1:3000/health || exit 1
-CMD ["npm", "run", "serve"]
+CMD ["pnpm", "run", "serve"]
