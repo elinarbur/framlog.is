@@ -1,8 +1,10 @@
+import { ENABLED_LANGUAGES } from "@/lib/i18n";
 import { format_icelandic_tel, format_isk, format_kennitala, is_str, srs_render } from "@/lib/utils";
 import { create_3ds_jwt } from "@/lib/verifone";
 import { get_verifone_connection_by_merchant_id } from "@/services/payment-gateway.service";
 import { get_receiver_page_by_id } from "@/services/receiver-page.service";
 import { web_services_router } from "@/src/routers/web-services";
+import { parse as parse_languages } from "accept-language-parser";
 import cookie_parser from "cookie-parser";
 import { randomUUID } from "crypto";
 import express from "express";
@@ -32,9 +34,18 @@ app.use("/public/static", express.static("static"));
 app.use(cookie_parser());
 app.use((req, res, next) => {
     let user_lang = "is";
+
     const language_cookie = req.cookies[process.env.LANGUAGE_COOKIE_NAME!];
-    if (is_str(language_cookie) && ["is", "en"].includes(language_cookie.toLowerCase())) {
+    const accept_language = req.headers["accept-language"];
+    if (is_str(language_cookie) && ENABLED_LANGUAGES.includes(language_cookie.toLowerCase())) {
         user_lang = language_cookie.toLowerCase();
+    } else if (is_str(accept_language)) {
+        for (const language of parse_languages(accept_language)) {
+            if (ENABLED_LANGUAGES.includes(language.code.toLowerCase())) {
+                user_lang = language.code.toLowerCase();
+                break;
+            }
+        }
     }
 
     res.locals._request_id = randomUUID().replace(/-/g, "");
