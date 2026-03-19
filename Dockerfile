@@ -18,7 +18,6 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
 # tsconfig-paths needs her
 COPY --from=builder /app/tsconfig.json ./tsconfig.json
-COPY --from=builder /app/tsconfig.build.json ./tsconfig.build.json
 ENV TS_NODE_BASEURL=./.build
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD curl -f http://127.1.1.1:3000/health || exit 1
 CMD ["pnpm", "run", "serve"]
