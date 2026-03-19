@@ -1,0 +1,54 @@
+<script>
+    /*
+
+    Dynamic 3D Secure AIO script for Verifone S2S.
+    Merchant ID: <%= typeof vfi !== "undefined" ? vfi.merchant_id : 'Not set' %>
+    Gateway currency: <%= typeof vfi !== "undefined" ? vfi.currency : 'Unknown' %>
+
+    */
+
+    <% if (typeof error !== "undefined") { %>
+        alert('<%= error %>');
+        console.error('<%= error %>');
+        document.write('<%= error %>');
+    <% } %>
+    <% if (typeof error === "undefined") { %>
+    Cardinal.configure({
+        timeout: 6000,
+        maxRequestRetries: 3,
+        logging: {
+            level: "verbose",
+        },
+    });
+
+    Cardinal.setup("init", { jwt: THREEDS_JWT });
+
+    Cardinal.on("payments.setupComplete", (setupCompleteData) => {
+        device_info_id = setupCompleteData.sessionId;
+    });
+
+    Cardinal.on("payments.validated", (data, jwt) => {
+        switch (data.ActionCode) {
+            case "SUCCESS": {
+                const threed_data = data.Payment.ExtendedData;
+
+                threeds_auth_value.eci_flag = threed_data.ECIFlag;
+                threeds_auth_value.cavv = threed_data.CAVV;
+                threeds_auth_value.pares_status = threed_data.PAResStatus;
+                threeds_auth_value.threeds_version = threed_data.ThreeDSVersion;
+                threeds_auth_value.signature_verification = threed_data.SignatureVerification;
+                threeds_auth_value.error_desc = data.ErrorDescription;
+                threeds_auth_value.error_no = String(data.ErrorNumber);
+
+                return initiate_payment();
+            }
+
+            default: {
+                stop_loading();
+                console.error("Non-successful response from Cardinal: " + data);
+                return set_error("Non-successful response from Cardinal, see console.");
+            }
+        }
+    });
+    <% } %>
+</script>

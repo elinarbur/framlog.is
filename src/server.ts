@@ -1,6 +1,9 @@
-import { prisma } from "@/lib/prisma";
-import { format_isk, is_str } from "@/lib/utils";
+import { format_icelandic_tel, format_isk, format_kennitala, is_str, srs_render } from "@/lib/utils";
+import { create_3ds_jwt } from "@/lib/verifone";
+import { get_verifone_connection_by_merchant_id } from "@/services/payment-gateway.service";
+import { get_receiver_page_by_id } from "@/services/receiver-page.service";
 import { web_services_router } from "@/src/routers/web-services";
+import cookie_parser from "cookie-parser";
 import { randomUUID } from "crypto";
 import express from "express";
 import rateLimit from "express-rate-limit";
@@ -26,7 +29,14 @@ app.use(
 app.set("trust proxy", 1);
 app.use("/", express.static("webroot"));
 app.use("/public/static", express.static("static"));
+app.use(cookie_parser());
 app.use((req, res, next) => {
+    let user_lang = "is";
+    const language_cookie = req.cookies[process.env.LANGUAGE_COOKIE_NAME!];
+    if (is_str(language_cookie) && ["is", "en"].includes(language_cookie.toLowerCase())) {
+        user_lang = language_cookie.toLowerCase();
+    }
+
     res.locals._request_id = randomUUID().replace(/-/g, "");
     res.locals._version = process.env.SOURCE_COMMIT;
     res.locals._generated = new Date().toISOString();
@@ -35,6 +45,7 @@ app.use((req, res, next) => {
     // @ts-expect-error
     res.locals._ratelimit = req.rateLimit;
     res.locals.current_year = new Date().getUTCFullYear();
+    res.locals.user_lang = user_lang;
 
     next();
 });
@@ -44,8 +55,37 @@ app.get("/health", (_req, res) => {
     return res.status(200).send("OK");
 });
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
     return res.render("content/about");
+});
+
+app.get("/is", (_req, res) => {
+    return res.status(307).cookie(process.env.LANGUAGE_COOKIE_NAME!, "is").redirect("/");
+});
+
+app.get("/en", (_req, res) => {
+    return res.status(307).cookie(process.env.LANGUAGE_COOKIE_NAME!, "en").redirect("/");
+});
+
+app.get("/srs/verifone-3ds.js", async (req, res) => {
+    const merchant_id = req.query.merchant_id;
+    if (!is_str(merchant_id)) {
+        return srs_render(res, "ssr-scripts/verifone-3ds", { error: "Missing merchant ID." });
+    }
+
+    const verifone_connection = await get_verifone_connection_by_merchant_id(merchant_id);
+    if (!verifone_connection) {
+        return srs_render(res, "ssr-scripts/verifone-3ds", { error: "Invalid merchant ID." });
+    }
+
+    const [jwt, error_code, error_type] = await create_3ds_jwt(verifone_connection);
+    if (!jwt) {
+        console.log(`lib/verifone.ts error code: ${error_code}, error side: ${error_type}`);
+
+        return srs_render(res, "ssr-scripts/verifone-3ds", { error: error_code });
+    }
+
+    return srs_render(res, "ssr-scripts/verifone-3ds", { vfi: verifone_connection, jwt });
 });
 
 app.get("/:receiver_page_id", async (req, res) => {
@@ -53,30 +93,10 @@ app.get("/:receiver_page_id", async (req, res) => {
         return res.status(404).render("404");
     }
 
-    const page = await prisma.receiver_page.findUnique({
-        where: { id: req.params.receiver_page_id },
-        include: {
-            title_string: true,
-            subtitle_string: true,
-            about_card_title_string: true,
-            about_card_paragraphs: {
-                orderBy: {
-                    order: "asc",
-                },
-            },
-            payment_gateway: {
-                include: {
-                    verifone_connection: true,
-                },
-            },
-            receiver: true,
-        },
-    });
+    const page = await get_receiver_page_by_id(req.params.receiver_page_id);
     if (!page) {
-        return res.status(404).render("404");
+        return res.contentType("application/xml").status(404).render("404");
     }
-
-    console.log(page);
 
     const i18n = {
         title: page.title_string.literal_is,
@@ -92,13 +112,20 @@ app.get("/:receiver_page_id", async (req, res) => {
         payment_gateway: {
             id: page.payment_gateway.id,
             active_schemes: page.payment_gateway.active_schemes,
+            verifone_connection_merchant_id: page.payment_gateway.verifone_connection.merchant_id,
         },
         donation_limit: page.donation_limit,
         donation_amount_presets: page.donation_amount_presets.map((preset) => ({
             label: format_isk(preset / 100),
             value: preset / 100,
         })),
-        receiver: page.receiver,
+        receiver: {
+            ...page.receiver,
+            registration_id: format_kennitala(page.receiver.registration_id),
+            contact_phone: page.receiver.contact_phone ? format_icelandic_tel(page.receiver.contact_phone) : null,
+        },
+        verifone_js: process.env.VERIFONE_JS_URL!,
+        songbird_js: process.env.SONGBIRD_JS_URL!,
     });
 });
 
@@ -113,5 +140,29 @@ app.use((_req, res) => {
 });
 
 app.listen(port, () => {
+    if (!is_str(process.env.LANGUAGE_COOKIE_NAME)) {
+        console.error("Please set the `LANGUAGE_COOKIE_NAME` environment variable.");
+
+        return process.exit(10);
+    }
+
+    if (!is_str(process.env.VERIFONE_JS_URL)) {
+        console.error("Please set the `VERIFONE_JS_URL` environment variable.");
+
+        return process.exit(20);
+    }
+
+    if (!is_str(process.env.SONGBIRD_JS_URL)) {
+        console.error("Please set the `SONGBIRD_JS_URL` environment variable.");
+
+        return process.exit(30);
+    }
+
+    if (!is_str(process.env.VERIFONE_API_URL)) {
+        console.error("Please set the `VERIFONE_API_URL` environment variable.");
+
+        return process.exit(40);
+    }
+
     console.log(`Server running at http://0.0.0.0:${port}`);
 });

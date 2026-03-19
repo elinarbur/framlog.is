@@ -310,6 +310,9 @@
         </main>
 
         <%- include('../partials/scripts') %>
+        <script src="<%= verifone_js %>"></script>
+        <script src="<%= songbird_js %>"></script>
+        <script src="/srs/verifone-3ds.js?merchant_id=<%= payment_gateway.verifone_connection_merchant_id %>"></script>
 
         <script>
             const donation_limit = Number("<%= donation_limit ?? '0' %>");

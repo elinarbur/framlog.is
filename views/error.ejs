@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Error>
+    <System_Code><%= system_code %></System_Code>
+    <Http_Code><%= http_code %></Http_Code>
+    <Message><%= typeof message === "string" ? message : 'An unexpected internal server error ocurred.' %></Message>
+    <Path><%= _pathname %></Path>
+    <Request_Id><%= _request_id %></Request_Id>
+    <Server>express</Server>
+</Error>

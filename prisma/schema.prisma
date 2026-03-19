@@ -33,7 +33,7 @@ model receiver {
     terms_url        String
     pages            receiver_page[]
     created_at       DateTime                @default(now())
-    updated_at       DateTime                @updatedAt
+    updated_at       DateTime                @default(now()) @updatedAt
 }
 
 model receiver_page {
@@ -52,7 +52,7 @@ model receiver_page {
     donation_limit              Int?
     donation_amount_presets     Int[]
     created_at                  DateTime              @default(now())
-    updated_at                  DateTime              @updatedAt
+    updated_at                  DateTime              @default(now()) @updatedAt
 }
 
 enum translation_string_type {
@@ -72,7 +72,7 @@ model translation_strings {
     receiver_page_about_card_paragraph    receiver_page?          @relation(fields: [receiver_page_about_card_paragraph_id], references: [id])
     receiver_page_about_card_paragraph_id String?
     created_at                            DateTime                @default(now())
-    updated_at                            DateTime                @updatedAt
+    updated_at                            DateTime                @default(now()) @updatedAt
 }
 
 enum payment_gateway_schemes {
@@ -102,7 +102,7 @@ model payment_gateway {
     verifone_connection             verifone_connection        @relation(fields: [verifone_connection_merchant_id], references: [merchant_id])
     verifone_connection_merchant_id String
     created_at                      DateTime                   @default(now())
-    updated_at                      DateTime                   @updatedAt
+    updated_at                      DateTime                   @default(now()) @updatedAt
 }
 
 model verifone_connection {
@@ -119,7 +119,7 @@ model verifone_connection {
     active_payment_gateways      payment_gateway[]
     transactions                 payment_gateway_connection_transaction[]
     created_at                   DateTime                                 @default(now())
-    updated_at                   DateTime                                 @updatedAt
+    updated_at                   DateTime                                 @default(now()) @updatedAt
 }
 
 model payment_gateway_connection_transaction {
@@ -134,5 +134,12 @@ model payment_gateway_connection_transaction {
     verifone_connection             verifone_connection       @relation(fields: [verifone_connection_merchant_id], references: [merchant_id])
     verifone_connection_merchant_id String
     created_at                      DateTime                  @default(now())
-    updated_at                      DateTime                  @updatedAt
+    updated_at                      DateTime                  @default(now()) @updatedAt
+}
+
+model setting {
+    key        String   @id
+    value      String
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
 }
