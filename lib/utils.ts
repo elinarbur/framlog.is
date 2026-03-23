@@ -99,6 +99,6 @@ export const srs_render = (res: Response, srs: string, data?: any & {}) => {
             return res.contentType("text/plain").status(500).send(stringify_error(err));
         }
 
-        return res.contentType("text/javascript").status(400).send(minified.code);
+        return res.contentType("text/javascript").status(200).send(minified.code);
     });
 };
