@@ -21,7 +21,7 @@
         },
     });
 
-    Cardinal.setup("init", { jwt: THREEDS_JWT });
+    Cardinal.setup("init", { jwt: `<%= jwt %>` });
 
     Cardinal.on("payments.setupComplete", (setupCompleteData) => {
         device_info_id = setupCompleteData.sessionId;
